@@ -84,6 +84,12 @@ def topic():
     global i
     if lb_number['text'] == 10:
         lb_number['text'] = ''
+        lb_que['text'] = ''
+        bt_a['text'] = 'A'
+        bt_b['text'] = 'B'
+        bt_c['text'] = 'C'
+        bt_d['text'] = 'D'
+        lb_point_result['text'] = '做題結束 , 總分為 ' + str(lb_point['text'])
         disable()
     else:
         lb_que['text'] = dt.topic_random[i]['topic_que']
@@ -122,9 +128,7 @@ def start():
 
 # 檢查答案
 def check(r):
-    if i == 11:
-        pass
-    elif r == dt.topic_random[i-1]['topic_ans']:
+    if r == dt.topic_random[i-1]['topic_ans']:
         lb_point_result['text'] = '答對 , 分數 +10 '
         lb_point['text'] += 10
         topic()
