@@ -6,6 +6,7 @@ window = tk.Tk()
 window.title('選擇題')
 window.geometry('600x600')
 
+# global 題數.題目
 i = 0
 
 
@@ -14,8 +15,10 @@ def ready_to_start():
     # 檢查 et_name 是否為int
     try:
         int(et_name.get())
+    # 檢查
     except ValueError:
         messagebox.showerror('error', '請輸入學號')
+    # 呼叫座標
     else:
         # Label 學號座標
         lb_name.place(x=200, y=0)
@@ -49,8 +52,6 @@ def ready_to_start():
         bt_d.place(x=200, y=350)
         # Button 開始座標
         bt_start.place(x=200, y=450)
-        # Button 重新開始座標
-        bt_ui_update.place(x=200, y=500)
         # Label 分數標題座標
         lb_point_title.place(x=100, y=150)
         # Label 分數座標
@@ -82,6 +83,7 @@ def disable():
 # show題目
 def topic():
     global i
+    # 如果題數 == 10 , 清空資訊 , 僅留計分資訊
     if lb_number['text'] == 10:
         lb_number['text'] = ''
         lb_que['text'] = ''
@@ -90,7 +92,9 @@ def topic():
         bt_c['text'] = 'C'
         bt_d['text'] = 'D'
         lb_point_result['text'] = '做題結束 , 總分為 ' + str(lb_point['text'])
+        bt_ui_update.place(x=200, y=500)
         disable()
+    # 如果題數 != 10 , 到下一題
     else:
         lb_que['text'] = dt.topic_random[i]['topic_que']
         bt_a['text'] = dt.topic_random[i]['topic_a']
@@ -104,14 +108,14 @@ def topic():
 
 # 倒數做題秒數
 def countdown():
-    print('count')
+    # 如果題數 == '' , 秒數 = '' , 將不再循環
     if lb_number['text'] == '':
         lb_count['text'] = ''
-
+    # 如果秒數 > 0 , 循環倒數 1 秒
     elif lb_count['text'] > 0:
         lb_count['text'] -= 1
         window.after(1000, countdown)
-
+    # 如果秒數 == 0 , 將跳下一題
     elif lb_count['text'] == 0:
         lb_point_result['text'] = '時間到 , 分數 -5 '
         topic()
@@ -120,15 +124,30 @@ def countdown():
 
 # 開始
 def start():
+    # 點選開始將開啟答案按鈕並開始做題與倒數秒數
     normal()
     topic()
     countdown()
+    # 忘記 Button start 座標
     bt_start.place_forget()
+
+
+# 更新UI
+def ui_update():
+    # i = 0 , 顯示 Button start 座標 , 忘記 Button bt_ui_update 座標
+    global i
+    i = 0
+    lb_point['text'] = 0
+    bt_start.place(x=200, y=450)
+    bt_ui_update.place_forget()
+    lb_point_result['text'] = ''
+    # 重新打算題目
+    dt.topic_random = dt.random.sample(dt.topic, 10)
 
 
 # 檢查答案
 def check(r):
-    if r == dt.topic_random[i-1]['topic_ans']:
+    if r == dt.topic_random[i - 1]['topic_ans']:
         lb_point_result['text'] = '答對 , 分數 +10 '
         lb_point['text'] += 10
         topic()
@@ -175,7 +194,7 @@ bt_d = tk.Button(window, text='D', width=9, command=lambda: check(bt_d['text']),
 # Button 開始
 bt_start = tk.Button(window, text='start', width=9, command=start, font=('Time new roman', 18))
 # Button 重新開始
-bt_ui_update = tk.Button(window, text='restart', width=9, font=('Time new roman', 18))
+bt_ui_update = tk.Button(window, text='restart', command=ui_update, width=9, font=('Time new roman', 18))
 # Button 準備考試
 bt_ready_to_start = tk.Button(window, text='準備考試', width=9, command=ready_to_start, font=('Time new roman', 18))
 # Label 分數標題
